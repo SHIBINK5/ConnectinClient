@@ -19,7 +19,8 @@ const Chat = () => {
   const [chats, setChats] = useState([]);
   const [currentChat, setCurrentChat] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
-  const socket = useRef();
+  // const socket = useRef();
+  const socket=io.connect(process.env.REACT_APP_BASE_URL)
    const [sendMessage, setSendMessage] = useState(null);
    const [receivedMessage, setReceivedMessage] = useState(null);
  
@@ -27,18 +28,13 @@ const Chat = () => {
   useEffect(() => {
     console.log('hi this is first use effect')
     if (sendMessage !== null) {
-      socket.current.emit("send-message", sendMessage);
+      socket.emit("send-message", sendMessage);
     }
   }, [sendMessage]); 
 
   useEffect(() => {
-    // socket.on('connect', () => {
-    //   //setIsConnected(true);
-    // });
-    console.log('hey this')
-    socket.current = io(`ws://localhost:8800`);
-    socket.current.emit("new-user-add", user._id);
-    socket.current.on("get-users", (users) => {
+    socket.emit("new-user-add", user._id);
+    socket.on("get-users", (users) => {
       setOnlineUsers(users);
       console.log(onlineUsers, "onlineUsers");
     });
@@ -46,7 +42,7 @@ const Chat = () => {
 
   //Recieve messages from the socket server
   useEffect(() => {
-    socket.current.on("recieve-message", (data) => {
+    socket.on("recieve-message", (data) => {
       console.log(data,'receive message');
       setReceivedMessage(data);
     });

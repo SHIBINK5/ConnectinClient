@@ -33,7 +33,7 @@ function App() {
       <Routes>
       
       <Route path="/home" element={isAuth ? <HomePage /> : <LoginPage />}/>
-      <Route path="/" element={ <LoginPage />}/>
+      <Route path="/" element={ isAuth?<Navigate to='/home'/> :<LoginPage/>}/>
      
      
       <Route
